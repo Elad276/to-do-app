@@ -1,17 +1,24 @@
 import styles from './TodoFormFields.module.css';
 import { PRIORITIES, PRIORITY_DEFAULT } from "../constants/priorities";
 
-export function TodoFormFields( {todo={}, showAllFields = true} ) {
+
+
+export function TodoFormFields({ todo = {}, showAllFields = true, register, errors = {} }) {
     return (
         <div className={styles.FormFields}>
             <div className={styles.FormFields}>
                 <input
                     type="text"
                     placeholder="Task name"
-                    name="name"
                     autoComplete='off'
                     defaultValue={todo.name}
+                    aria-invalid={!!errors.name}
+                    {...register('name')}
                 />
+                {!!errors.name && (
+                    <p className={styles.FormFieldError}>
+                        {errors.name.message}</p>
+                )}
             </div>
 
             {showAllFields && (
@@ -20,27 +27,44 @@ export function TodoFormFields( {todo={}, showAllFields = true} ) {
                         <textarea
                             placeholder="Task description"
                             rows={3}
-                            name="description"
                             defaultValue={todo.description}
-                        />
+                            aria-invalid={!!errors.description}
+                            {...register('description')}/>
+                        {!!errors.description && (
+                            <p className={styles.FormFieldError}>
+                                {errors.description.message}</p>
+                        )}
                     </div>
 
-                    <div className={styles.FromGroup}>
+                    <div className={styles.FormGroup}>
                         <div className={styles.FormField}>
                             <label htmlFor="deadline">Deadline</label>
-                            <input type="date" id="deadline" name="deadline" defaultValue={todo.deadline} />
+                            <input
+                                type="date"
+                                id="deadline"
+                                defaultValue={todo.deadline}
+                                aria-invalid={!!errors.deadline}
+                                {...register("deadline")}
+                            />
+                            {!!errors.deadline &&(                                 <p className={styles.FormFieldError}>
+                                    {errors.deadline.message}</p>
+                            )}
                         </div>
                         <div className={styles.FormField}>
                             <label htmlFor="priority">Priority</label>
                             <select
-                                defaultValue={todo.priority ?? PRIORITY_DEFAULT}
                                 id="priority"
-                                name="priority">
-
+                                defaultValue={todo.priority ?? PRIORITY_DEFAULT}
+                                aria-invalid={!!errors.priority}
+                                {...register('priority')}>
                                 {Object.entries(PRIORITIES).map(([key, { label }]) => (
                                     <option key={key} value={key}> {label}</option>
                                 ))}
                             </select>
+                            {!!errors.priority && (
+                                <p className={styles.FormFieldError}>
+                                    {errors.priority.message}</p>
+                            )}
                         </div>
                     </div>
                 </>

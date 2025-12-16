@@ -2,28 +2,24 @@ import styles from './TodoListItem.module.css';
 import { PRIORITIES, PRIORITY_DEFAULT } from "../constants/priorities";
 import { TodoFormFields } from '../TodoFormFields/TodoFormFields';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { getTodoSchema } from '../../schemas/todo';
 
 
 export function TodoListItem({ todo, onToggleTodo, onUpdateTodo , onDeleteTodo}) {
     const [isEditing, setIsEditing] = useState(false);
-
-    function handleEdit(event) {
-        event.preventDefault();
-        console.log('Form submitted');
-
-        const { elements } = event.target;
-        if (elements.name.value === '') {
-            return;
-        }
-
-        onUpdateTodo(todo.id, {
-            name: elements.name.value,
-            description: elements.description.value,
-            deadline: elements.deadline.value,
-            priority: elements.priority.value,
-            completed: todo.completed,
-        });
-
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        resolver: yupResolver(getTodoSchema()),
+        defaultValues: {
+            name: todo.name,
+            description: todo.description,
+            deadline: todo.deadline,
+            priority: todo.priority,
+        },
+    });
+    function handleEdit(data) {
+        onUpdateTodo(todo.id, data);
         setIsEditing(false);
     }
 
@@ -69,9 +65,9 @@ export function TodoListItem({ todo, onToggleTodo, onUpdateTodo , onDeleteTodo})
         <form 
         className={styles.Controls} 
         onReset={() => setIsEditing(false)}
-        onSubmit={handleEdit}
+        onSubmit={handleSubmit(handleEdit)}
         >
-            <TodoFormFields todo={todo} />
+            <TodoFormFields todo={todo} register={register} errors={errors} />
         
             <div className={styles.Controls}>
                 <input type="submit" value="✅" />

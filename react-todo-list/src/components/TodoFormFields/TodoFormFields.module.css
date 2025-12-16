@@ -9,6 +9,7 @@
     display: flex;
     gap: 4px;
     align-items: flex-start;
+    margin-bottom: 15px;
   }
   
   .FormField {
@@ -32,4 +33,11 @@
   
   .FormField textarea {
     resize: none;
+  }
+
+  .FormFieldError {
+    margin-top: 0;
+    padding-left: 10px;
+    font-size: 13px;
+    color: rgb(226, 92, 77);
   }

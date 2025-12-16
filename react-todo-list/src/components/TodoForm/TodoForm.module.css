@@ -6,6 +6,7 @@
   
   .Form input[type="submit"] {
     width: 100%;
+    background-color: #314999;
   }
 
   .Title {
